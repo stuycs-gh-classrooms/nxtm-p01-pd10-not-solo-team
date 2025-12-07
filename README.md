@@ -52,17 +52,25 @@ Boss enemy
 How will you be using arrays in this project?
 
 1D Array:
-- YOUR ANSER HERE
+- Bullets
 
 2D Array:
-- YOUR ANSWER HERE
+- Aliens
 
 
 ### Controls
 How will your program be controlled? List all keyboard commands and mouse interactions.
 
 Keyboard Commands:
-- LIST OF COMMANDS HERE
+
+Must have controls:
+Left and Right arrows for moving spaceship
+Spacebar to shoot
+P to pause and unpause and/or R to reset the game
+
+Extra controls:
+Button to move to the next level
+Buttons to switch attack type if adding multiple player attacks
 
 Mouse Control:
 - Mouse movement:
@@ -72,14 +80,32 @@ Mouse Control:
 ### Classes
 What classes will you be creating for this project? Include the instance variables and methods that you believe you will need. You will be required to create at least 2 different classes. If you are going to use classes similar to those we've made for previous assignments, you will have to add new features to them.
 
-CLASS NAME0
+Player
 - Instance variables:
-  - LIST INSTANCE VARS HERE
+  - float x, float speed
+  - int lives (if multiple lives)
 - METHODS
-  - LIST METHODS HERE
+  - display() to draw the player
+  - move() for the player to move left and right
+  - shoot() to make a bullet shoot from the player
+  - takeDamage() to lose a live (if multiple lives)
+  - reset() puts player in starting location and possibly gives back lives (if multiple levels)
 
-CLASS NAME1
+Bullet
 - Instance variables:
-  - LIST INSTANCE VARS HERE
+  - float x, float y, float speed
 - METHODS
-  - LIST METHODS HERE
+  - display() to draw the bullet
+  - update() changes the bullet's location based on it's speed and if it hit something
+  - collide() if the bullet hits an alien or the edge of the screen
+
+Alien
+- Instance variables:
+  - float x, float y, float speed
+  - int lives (if multiple lives)
+- METHODS
+  - display() to draw the aliens
+  - update(float dx, float dy) to move the alien group
+  - life() to kill the alien if it is shoot
+  - shoot() to have random aliens shoot at the player
+  - takeDamage() to lose a live (if multiple lives)
