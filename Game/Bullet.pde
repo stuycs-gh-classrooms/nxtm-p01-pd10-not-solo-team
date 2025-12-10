@@ -1,10 +1,10 @@
-class Alien {
+class Bullet {
   PVector c;
   float s;
   float xspeed = 0;
   float yspeed = 0;
 
-  Alien(PVector c, float s) {
+  Bullet(PVector c, float s) {
     this.c = c;
     this.s = s;
   }
@@ -18,7 +18,7 @@ class Alien {
     ellipse(c.x, c.y, s, s);
   }
 
-  boolean collides(Alien o) {
+  boolean collides(Bullet o) {
     return dist(c.x, c.y, o.c.x, o.c.y) < (s/2 + o.s/2);
   }
 }
