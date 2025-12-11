@@ -1,24 +1,25 @@
 class Alien {
-  PVector c;
-  float s;
-  float xspeed = 0;
-  float yspeed = 0;
+  float x, y;
+  float w = 30;
+  float h = 20;
 
-  Alien(PVector c, float s) {
-    this.c = c;
-    this.s = s;
+  Alien(float x, float y) {
+    this.x = x;
+    this.y = y;
   }
 
-  void move() {
-    c.x += xspeed;
-    c.y += yspeed;
+  void update(float dx, float dy) {
+    x += dx;
+    y += dy;
   }
 
   void display() {
-    ellipse(c.x, c.y, s, s);
+    fill(255);
+    rectMode(CENTER);
+    rect(x, y, w, h);
   }
 
-  boolean collides(Alien o) {
-    return dist(c.x, c.y, o.c.x, o.c.y) < (s/2 + o.s/2);
+  boolean isHit(Bullet b) {
+    return abs(b.x - x) < w/2 && abs(b.y - y) < h/2;
   }
 }

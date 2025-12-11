@@ -1,67 +1,111 @@
-Alien[][] grid;
-Bullet [] boll;
-Player play;
+Player player;
+BulletList playerBullets;
+Alien[][] aliens;
 
 int rows = 5;
-int cols = 7;
-float alienSize = 40;
+int cols = 8;
+float alienDX = 1;
+float alienDrop = 20;
+boolean movingRight = true;
 
 void setup() {
-  size(600, 800);
-  grid = new Alien[rows][cols];
-  play = new Player();
-  play.x = width/2;
-  makeAlien(grid);
-  newProjectile(alienSize);
+  size(600, 600);
+  player = new Player(width/2, height - 40);
+  playerBullets = new BulletList();
+  aliens = new Alien[rows][cols];
+  makeAliens();
 }
 
 void draw() {
   background(0);
-  drawGrid(grid);
-  play.display();
-  //projectile.move();
-  //projectile.display();
-  //processCollisions(projectile, grid);
-  play.move();
+  player.update();
+  player.display();
+  updateBullets();
+  updateAliens();
+  checkCollisions();
 }
 
-void keyPressed() {
-  //if (key == ' ') projectile.yspeed = -1;
-  //if (keyCode == LEFT) projectile.c.x -= 10;
-  //if (keyCode == RIGHT) projectile.c.x += 10;
-}
+void makeAliens() {
+  float startX = 80;
+  float startY = 60;
+  float spaceX = 50;
+  float spaceY = 40;
 
-void makeAlien(Alien[][] g) {
   for (int r = 0; r < rows; r++) {
     for (int c = 0; c < cols; c++) {
-      float x = 80 + c * alienSize;
-      float y = 80 + r * alienSize;
-      g[r][c] = new Alien(new PVector(x, y), alienSize);
+      aliens[r][c] = new Alien(startX + c*spaceX, startY + r*spaceY);
     }
   }
 }
 
-void newProjectile(float psize) {
-  //projectile = new Alien(new PVector(width/2, height - psize), psize);
-  //projectile.yspeed = 0;
-}
-
-void drawGrid(Alien[][] g) {
-  for (int r = 0; r < rows; r++) {
-    for (int c = 0; c < cols; c++) {
-      if (g[r][c] != null) g[r][c].display();
+void updateBullets() {
+  for (int i = playerBullets.size() - 1; i >= 0; i--) {
+    Bullet b = playerBullets.get(i);
+    b.update();
+    b.display();
+    if (b.isOffScreen()) {
+      playerBullets.remove(i);
     }
   }
 }
 
-void processCollisions(Alien p, Alien[][] g) {
+void updateAliens() {
+  boolean hitEdge = false;
+
   for (int r = 0; r < rows; r++) {
     for (int c = 0; c < cols; c++) {
-      if (g[r][c] != null && p.collides(g[r][c])) {
-        g[r][c] = null;
-        newProjectile(alienSize);
-        return;
+      Alien a = aliens[r][c];
+      if (a != null) {
+        if ((a.x > width - 40 && movingRight) || (a.x < 20 && !movingRight)) hitEdge = true;
       }
     }
   }
+
+  if (hitEdge) {
+    movingRight = !movingRight;
+    for (int r = 0; r < rows; r++) {
+      for (int c = 0; c < cols; c++) {
+        Alien a = aliens[r][c];
+        if (a != null) a.y += alienDrop;
+      }
+    }
+  }
+
+  float dx;
+  if (movingRight) {
+    dx = alienDX;
+  }
+  else {
+    dx = -alienDX;
+  }
+
+  for (int r = 0; r < rows; r++) {
+    for (int c = 0; c < cols; c++) {
+      Alien a = aliens[r][c];
+      if (a != null) {
+        a.update(dx, 0);
+        a.display();
+      }
+    }
+  }
+}
+
+void checkCollisions() {
+  for (int i = playerBullets.size() - 1; i >= 0; i--) {
+    Bullet b = playerBullets.get(i);
+    for (int r = 0; r < rows; r++) {
+      for (int c = 0; c < cols; c++) {
+        Alien a = aliens[r][c];
+        if (a != null && a.isHit(b)) {
+          aliens[r][c] = null;
+          playerBullets.remove(i);
+          return;
+        }
+      }
+    }
+  }
+}
+
+void keyPressed() {
+  if (key == ' ') playerBullets.add(player.shoot());
 }

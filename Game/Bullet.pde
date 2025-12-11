@@ -1,24 +1,23 @@
 class Bullet {
-  PVector c;
-  float s;
-  float xspeed = 0;
-  float yspeed = 0;
+  float x, y;
+  float speed = 7;
 
-  Bullet(PVector c, float s) {
-    this.c = c;
-    this.s = s;
+  Bullet(float x, float y) {
+    this.x = x;
+    this.y = y;
   }
 
-  void move() {
-    c.x += xspeed;
-    c.y += yspeed;
+  void update() {
+    y -= speed;
   }
 
   void display() {
-    ellipse(c.x, c.y, s, s);
+    fill(255);
+    rectMode(CENTER);
+    rect(x, y, 4, 12);
   }
 
-  boolean collides(Bullet o) {
-    return dist(c.x, c.y, o.c.x, o.c.y) < (s/2 + o.s/2);
+  boolean isOffScreen() {
+    return y < 0;
   }
 }

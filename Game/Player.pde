@@ -1,23 +1,36 @@
 class Player {
-  float x;
-  
-  Player(){
+  float x, y;
+  float speed = 5;
+
+  Player(float x, float y) {
+    this.x = x;
+    this.y = y;
   }
-  
-  void display(){
-    triangle(x, 670, x-30, 720, x+30, 720);
-  }
-  
-  void move(){
-    if(keyPressed){
-      if(key == LEFT){
-        x -= 5;
-        display();
+
+  void update() {
+    if (keyPressed) {
+      if (keyCode == LEFT) {
+        x -= speed;
       }
-      if(key == RIGHT){
-        x += 5;
-        display();
+      if (keyCode == RIGHT) {
+        x += speed;
       }
     }
+    if (x < 20){
+      x = 20;
+    }
+    else if (x > width-20){
+      x = 20;
+    }
+  }
+
+  void display() {
+    fill(255);
+    rectMode(CENTER);
+    rect(x, y, 40, 20);
+  }
+
+  Bullet shoot() {
+    return new Bullet(x, y - 15);
   }
 }
