@@ -4,8 +4,9 @@ Alien[][] aliens;
 
 int rows = 5;
 int cols = 8;
+int cooldown = 0;
 float alienDX = 1;
-float alienDrop = 20;
+float alienDrop = 10;
 boolean movingRight = true;
 
 void setup() {
@@ -14,6 +15,7 @@ void setup() {
   playerBullets = new BulletList();
   aliens = new Alien[rows][cols];
   makeAliens();
+  frameRate(60);
 }
 
 void draw() {
@@ -51,7 +53,6 @@ void updateBullets() {
 
 void updateAliens() {
   boolean hitEdge = false;
-
   for (int r = 0; r < rows; r++) {
     for (int c = 0; c < cols; c++) {
       Alien a = aliens[r][c];
@@ -107,5 +108,8 @@ void checkCollisions() {
 }
 
 void keyPressed() {
-  if (key == ' ') playerBullets.add(player.shoot());
+  if (key == ' ' && frameCount - cooldown >= 30) {
+    playerBullets.add(player.shoot());
+    cooldown = frameCount;
+  }
 }

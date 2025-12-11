@@ -20,12 +20,12 @@ class Player {
       x = 20;
     }
     else if (x > width-20){
-      x = 20;
+      x = width - 20;
     }
   }
 
   void display() {
-    fill(255);
+    fill(0, 200, 255);
     rectMode(CENTER);
     rect(x, y, 40, 20);
   }

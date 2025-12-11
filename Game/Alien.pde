@@ -14,9 +14,13 @@ class Alien {
   }
 
   void display() {
-    fill(255);
+    fill(0, 255, 0);
     rectMode(CENTER);
     rect(x, y, w, h);
+  }
+  
+  Bullet shoot() {
+    return new Bullet(x, y - 15);
   }
 
   boolean isHit(Bullet b) {
