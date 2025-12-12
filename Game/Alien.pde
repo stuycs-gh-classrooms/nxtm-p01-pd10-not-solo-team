@@ -20,7 +20,7 @@ class Alien {
   }
   
   Bullet shoot() {
-    return new Bullet(x, y - 15);
+    return new Bullet(x, y - 15, -7);
   }
 
   boolean isHit(Bullet b) {

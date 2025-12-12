@@ -1,5 +1,6 @@
 Player player;
 BulletList playerBullets;
+BulletList alienBullets;
 Alien[][] aliens;
 
 int rows = 5;
@@ -13,6 +14,7 @@ void setup() {
   size(600, 600);
   player = new Player(width/2, height - 40);
   playerBullets = new BulletList();
+  alienBullets = new BulletList();
   aliens = new Alien[rows][cols];
   makeAliens();
   frameRate(60);
@@ -25,6 +27,7 @@ void draw() {
   updateBullets();
   updateAliens();
   checkCollisions();
+  //updateAttacks();
 }
 
 void makeAliens() {
@@ -51,8 +54,24 @@ void updateBullets() {
   }
 }
 
+void updateAttacks() {
+  for (int r = 0; r < rows; r++) {
+    for (int c = 0; c < cols; c++) {
+      for (int f = alienBullets.size() - 1; f >= 0; f--) {
+        Bullet b = alienBullets.get(f);
+        b.update();
+        b.display();
+        if (b.isOffScreen()) {
+          alienBullets.remove(f);
+        }
+      }
+    }
+  }
+}
+
 void updateAliens() {
   boolean hitEdge = false;
+  alienFire();
   for (int r = 0; r < rows; r++) {
     for (int c = 0; c < cols; c++) {
       Alien a = aliens[r][c];
@@ -75,8 +94,7 @@ void updateAliens() {
   float dx;
   if (movingRight) {
     dx = alienDX;
-  }
-  else {
+  } else {
     dx = -alienDX;
   }
 
@@ -111,5 +129,15 @@ void keyPressed() {
   if (key == ' ' && frameCount - cooldown >= 30) {
     playerBullets.add(player.shoot());
     cooldown = frameCount;
+  }
+}
+
+void alienFire() {
+  for (int r = 0; r < rows; r++) {
+    for (int c = 0; c < cols; c++) {
+      if (aliens[r][c] != null) {
+        alienBullets.add(aliens[r][c].shoot());
+      }
+    }
   }
 }

@@ -1,10 +1,10 @@
 class Bullet {
-  float x, y;
-  float speed = 7;
+  float x, y, speed;
 
-  Bullet(float x, float y) {
+  Bullet(float x, float y, float speed) {
     this.x = x;
     this.y = y;
+    this.speed = speed;
   }
 
   void update() {
