@@ -9,6 +9,7 @@ int cooldown = 0;
 float alienDX = 1;
 float alienDrop = 10;
 boolean movingRight = true;
+boolean paused = false;
 
 void setup() {
   size(600, 600);
@@ -22,12 +23,19 @@ void setup() {
 
 void draw() {
   background(0);
+  if (paused) {
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(32);
+    text("PAUSED", width/2, height/2);
+    return;
+  }
   player.update();
   player.display();
-  updateBullets();
+  updatePlayerBullets();
+  updateAlienBullets();
   updateAliens();
   checkCollisions();
-  //updateAttacks();
 }
 
 void makeAliens() {
@@ -35,7 +43,6 @@ void makeAliens() {
   float startY = 60;
   float spaceX = 50;
   float spaceY = 40;
-
   for (int r = 0; r < rows; r++) {
     for (int c = 0; c < cols; c++) {
       aliens[r][c] = new Alien(startX + c*spaceX, startY + r*spaceY);
@@ -43,7 +50,7 @@ void makeAliens() {
   }
 }
 
-void updateBullets() {
+void updatePlayerBullets() {
   for (int i = playerBullets.size() - 1; i >= 0; i--) {
     Bullet b = playerBullets.get(i);
     b.update();
@@ -54,17 +61,16 @@ void updateBullets() {
   }
 }
 
-void updateAttacks() {
-  for (int r = 0; r < rows; r++) {
-    for (int c = 0; c < cols; c++) {
-      for (int f = alienBullets.size() - 1; f >= 0; f--) {
-        Bullet b = alienBullets.get(f);
-        b.update();
-        b.display();
-        if (b.isOffScreen()) {
-          alienBullets.remove(f);
-        }
-      }
+void updateAlienBullets() {
+  for (int i = alienBullets.size() - 1; i >= 0; i--) {
+    Bullet b = alienBullets.get(i);
+    b.update();
+    b.display();
+    if (b.y > height) {
+      alienBullets.remove(i);
+    }
+    if (abs(b.x - player.x) < 20 && abs(b.y - player.y) < 10) {
+      alienBullets.remove(i);
     }
   }
 }
@@ -76,28 +82,29 @@ void updateAliens() {
     for (int c = 0; c < cols; c++) {
       Alien a = aliens[r][c];
       if (a != null) {
-        if ((a.x > width - 40 && movingRight) || (a.x < 20 && !movingRight)) hitEdge = true;
+        if ((a.x > width - 40 && movingRight) || (a.x < 20 && !movingRight)) {
+          hitEdge = true;
+        }
       }
     }
   }
-
   if (hitEdge) {
     movingRight = !movingRight;
     for (int r = 0; r < rows; r++) {
       for (int c = 0; c < cols; c++) {
         Alien a = aliens[r][c];
-        if (a != null) a.y += alienDrop;
+        if (a != null) {
+          a.y += alienDrop;
+        }
       }
     }
   }
-
   float dx;
   if (movingRight) {
     dx = alienDX;
   } else {
     dx = -alienDX;
   }
-
   for (int r = 0; r < rows; r++) {
     for (int c = 0; c < cols; c++) {
       Alien a = aliens[r][c];
@@ -126,17 +133,22 @@ void checkCollisions() {
 }
 
 void keyPressed() {
-  if (key == ' ' && frameCount - cooldown >= 30) {
+  if (key == ' ' && frameCount - cooldown >= 30 && !paused) {
     playerBullets.add(player.shoot());
     cooldown = frameCount;
+  }
+  if (key == 'p' || key == 'P') {
+    paused = !paused;
   }
 }
 
 void alienFire() {
-  for (int r = 0; r < rows; r++) {
-    for (int c = 0; c < cols; c++) {
+  if (random(1) < 0.01) {
+    int c = int(random(cols));
+    for (int r = rows - 1; r >= 0; r--) {
       if (aliens[r][c] != null) {
         alienBullets.add(aliens[r][c].shoot());
+        break;
       }
     }
   }

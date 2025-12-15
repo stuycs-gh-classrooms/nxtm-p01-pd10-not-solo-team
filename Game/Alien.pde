@@ -18,9 +18,9 @@ class Alien {
     rectMode(CENTER);
     rect(x, y, w, h);
   }
-  
+
   Bullet shoot() {
-    return new Bullet(x, y - 15, -7);
+    return new Bullet(x, y + 15, -6);
   }
 
   boolean isHit(Bullet b) {

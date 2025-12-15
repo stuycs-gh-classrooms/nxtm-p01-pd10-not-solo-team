@@ -22,20 +22,6 @@ class BulletList {
     arr[size++] = b;
   }
 
-  void add(int i, Bullet b) {
-    if (i < 0 || i > size) {
-      return;
-    }
-    if (size == arr.length) {
-      expand();
-    }
-    for (int n = size; n > i; n--) {
-      arr[n] = arr[n - 1];
-    }
-    arr[i] = b;
-    size++;
-  }
-
   Bullet get(int i) {
     if (i < 0 || i >= size) {
       return null;

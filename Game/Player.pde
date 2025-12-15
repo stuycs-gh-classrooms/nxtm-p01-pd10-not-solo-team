@@ -16,10 +16,9 @@ class Player {
         x += speed;
       }
     }
-    if (x < 20){
+    if (x < 20) {
       x = 20;
-    }
-    else if (x > width-20){
+    } else if (x > width - 20) {
       x = width - 20;
     }
   }
